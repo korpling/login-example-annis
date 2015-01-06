@@ -55,11 +55,11 @@ XML;
   private function sendUserCreationData($data, $name) {
     $curlConfig = array(
         CURLOPT_VERBOSE => true,
-        CURLOPT_URL => Config::annisServiceURL . "/admin/users/" . urlencode($name),
-        CURLOPT_CUSTOMREQUEST => "PUT",
+        CURLOPT_URL => Config::annisServiceURL . '/admin/users/' . urlencode($name),
+        CURLOPT_CUSTOMREQUEST => 'PUT',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPAUTH => CURLAUTH_ANY,
-        CURLOPT_USERPWD => Config::serviceUser . ":" . Config::servicePassword,
+        CURLOPT_USERPWD => Config::serviceUser . ':' . Config::servicePassword,
         CURLOPT_POSTFIELDS => $data,
         CURLOPT_POST => 1
     );
@@ -82,7 +82,7 @@ XML;
     $data = self::createUserXML($name, $password);
     $httpCode = self::sendUserCreationData($data, $name);
     if($httpCode != 200) {
-      trigger_error("Could not send user creation request, HTTP code is " . $httpCode);
+      trigger_error('Could not send user creation request, HTTP code is ' . $httpCode);
     }
     
     

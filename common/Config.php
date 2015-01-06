@@ -14,5 +14,5 @@
 class Config {
   const serviceUser = 'tmpusercreator';
   const servicePassword = '<test>';
-  const annisServiceURL = "http://localhost:5711/annis";
+  const annisServiceURL = 'http://localhost:5711/annis';
 }
