@@ -8,5 +8,4 @@
     <a href="protected/createtempuser.php">Login with Shibboleth</a>
     <?php phpinfo() ?>
   </body>
-  <
 /html>
