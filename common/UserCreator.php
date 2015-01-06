@@ -33,10 +33,16 @@ XML;
     return $randomString;
   }
   
+  private function createShiroHash($password) {
+    $result = '$shiro1$SHA-256$1$' . hash('sha256', $password);
+    
+    return $result;
+  }
+  
   private function createUserXML($name, $password, $expirationHours = 72) {
     $xml = new SimpleXMLElement(self::userTemplate);
     $xml->name = $name;
-    $xml->passwordHash = $password;
+    $xml->passwordHash = self::createShiroHash($password);
 
     // calculate expiration date from relative hours
     $expirationTimestamp = time() + ($expirationHours * 60 * 60);
