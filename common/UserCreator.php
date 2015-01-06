@@ -34,7 +34,12 @@ XML;
   }
   
   private function createShiroHash($password) {
-    $result = '$shiro1$SHA-256$1$' . hash('sha256', $password);
+    // TODO: generate random salt
+    $salt = 'aDsfSft%&';
+    // hash with sha256
+    $hash = hash('sha256', $salt . $password, true);
+
+    $result = '$shiro1$SHA-256$1$' . base64_encode($salt) . '$' . base64_encode($hash);
     
     return $result;
   }
