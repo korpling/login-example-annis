@@ -32,16 +32,21 @@ XML;
     }
     return $randomString;
   }
-
-  public function createTemporaryUser($name) {
-
-    $password = self::generateRandomString(64);
+  
+  private function createUserXML($name, $password, $expirationHours = 72) {
     $xml = new SimpleXMLElement(self::userTemplate);
     $xml->name = $name;
     $xml->passwordHash = $password;
 
+    // calculate expiration date from relative hours
+    $expirationTimestamp = time() + ($expirationHours * 60 * 60);
+    $xml->expires = date("c", $expirationTimestamp);
+    
     $data = $xml->asXML();
-
+    return $data;
+  }
+  
+  private function sendUserCreationData($data, $name) {
     $curlConfig = array(
         CURLOPT_VERBOSE => true,
         CURLOPT_URL => Config::annisServiceURL . "/admin/users/" . urlencode($name),
@@ -53,21 +58,28 @@ XML;
         CURLOPT_POST => 1
     );
 
-
     $ch = curl_init();
-
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/xml',
         'Content-Length: ' . strlen($data)
     ));
     curl_setopt_array($ch, $curlConfig);
-    
 
     $output = curl_exec($ch);
-
-    print(curl_getinfo($ch, CURLINFO_HTTP_CODE) . "<br/>");
-
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
+    return $httpcode;
+  }
+
+  public function createTemporaryUser($name) {
+    $password = self::generateRandomString(64);
+    $data = self::createUserXML($name, $password);
+    $httpCode = self::sendUserCreationData($data, $name);
+    if($httpCode != 200) {
+      trigger_error("Could not send user creation request, HTTP code is " . $httpCode);
+    }
+    
+    
     return $password;
   }
 
