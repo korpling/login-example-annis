@@ -1,0 +1,2 @@
+List of third-party dependencies.
+     (MIT License) jQuery (http://jquery.com)
