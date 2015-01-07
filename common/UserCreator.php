@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2015 Corpuslinguistic working group Humboldt University Berlin.
  *
@@ -16,7 +17,6 @@
  */
 
 include_once 'Config.php';
-
 
 /**
  * Description of UserCreator
@@ -42,7 +42,7 @@ XML;
     }
     return $randomString;
   }
-  
+
   private function createShiroHash($password) {
     // TODO: generate random salt
     $salt = 'aDsfSft%&';
@@ -50,10 +50,21 @@ XML;
     $hash = hash('sha256', $salt . $password, true);
 
     $result = '$shiro1$SHA-256$1$' . base64_encode($salt) . '$' . base64_encode($hash);
-    
+
     return $result;
   }
-  
+
+  private function addGroup($xml, $groupName) {
+    // check if group already exists
+    foreach ($xml->group as $g) {
+      if((string) $g == $groupName ) {
+        return;
+      }
+    }
+    // add the new group since it does not exist
+    $xml->addChild("group", $groupName);
+  }
+
   private function createUserXML($name, $password, $expirationHours = 72) {
     $xml = new SimpleXMLElement(self::userTemplate);
     $xml->name = $name;
@@ -62,11 +73,14 @@ XML;
     // calculate expiration date from relative hours
     $expirationTimestamp = time() + ($expirationHours * 60 * 60);
     $xml->expires = date("c", $expirationTimestamp);
+
+    self::addGroup($xml, "anonymous");
+    // TODO: add more groups depending on the identity provider
     
     $data = $xml->asXML();
     return $data;
   }
-  
+
   private function sendUserCreationData($data, $name) {
     $curlConfig = array(
         CURLOPT_VERBOSE => true,
@@ -96,11 +110,11 @@ XML;
     $password = self::generateRandomString(64);
     $data = self::createUserXML($name, $password);
     $httpCode = self::sendUserCreationData($data, $name);
-    if($httpCode != 200) {
+    if ($httpCode != 200) {
       trigger_error('Could not send user creation request, HTTP code is ' . $httpCode);
     }
-    
-    
+
+
     return $password;
   }
 
