@@ -21,7 +21,7 @@ include_once '../common/UserCreator.php';
       $annisPwd = $creator->createTemporaryUser($annisUser);
     }
     ?>
-    <form action="/annis-gui/login" id="loginForm" method="POST">
+    <form action="<?=Config::annisURL?>/login" id="loginForm" method="POST">
       <input type="hidden" name="annis-login-user" value="<?=$annisUser?>">
       <input type="hidden" name="annis-login-password" value="<?=$annisPwd?>">
     </form>

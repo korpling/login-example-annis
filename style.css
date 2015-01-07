@@ -1,0 +1,39 @@
+/* 
+    Created on : 07.01.2015, 14:22:40
+    Author     : Thomas Krause <krauseto@hu-berlin.de>
+*/
+.control {
+  width: 95%;
+  height: 230px;
+  background-color: rgb(236, 240, 246);
+  border-radius: 10px;
+  padding: 10px;
+  border-color: rgb(179, 179, 179);
+  border-style: solid;
+  border-width: 1px;
+
+  font-family: Arial, Helvetica, 'Lucida Grande', 'Lucida Sans Unicode', Tahoma, Verdana, sans-serif;
+  font-size: 13px;
+}
+
+.control h1 {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0px;
+  margin-top: 0px;
+}
+
+.control h2 {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0px;
+  margin-top: 0px;
+}
+
+.loginButtonBox {
+  text-align: center;
+
+}
+.text {
+  width: 100%;
+}
