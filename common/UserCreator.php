@@ -17,6 +17,7 @@
  */
 
 include_once 'Config.php';
+include_once '../lib/httpful.phar';
 
 /**
  * Description of UserCreator
@@ -81,29 +82,14 @@ XML;
     return $data;
   }
 
-  private function sendUserCreationData($data, $name) {
-    $curlConfig = array(
-        CURLOPT_VERBOSE => true,
-        CURLOPT_URL => Config::annisServiceURL . '/admin/users/' . urlencode($name),
-        CURLOPT_CUSTOMREQUEST => 'PUT',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPAUTH => CURLAUTH_ANY,
-        CURLOPT_USERPWD => Config::serviceUser . ':' . Config::servicePassword,
-        CURLOPT_POSTFIELDS => $data,
-        CURLOPT_POST => 1
-    );
+  private function sendUserCreationData($data, $name) {    
+    $response = Httpful\Request::put(Config::annisServiceURL . '/admin/users/' . urlencode($name))
+            ->body($data)
+            ->sendsXml()
+            ->authenticateWith(Config::serviceUser, Config::servicePassword)
+            ->send();
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/xml',
-        'Content-Length: ' . strlen($data)
-    ));
-    curl_setopt_array($ch, $curlConfig);
-
-    $output = curl_exec($ch);
-    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    return $httpcode;
+    return $response->code;
   }
 
   public function createTemporaryUser($name) {
