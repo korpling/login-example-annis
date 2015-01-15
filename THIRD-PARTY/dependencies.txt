@@ -1,2 +1,4 @@
 List of third-party dependencies.
      (MIT License) jQuery (http://jquery.com)
+     (MIT License) HTTPFUL (http://phphttpclient.com/)
+

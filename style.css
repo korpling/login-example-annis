@@ -52,3 +52,16 @@
 .text {
   width: 100%;
 }
+
+.shib-link {
+  text-align: center;
+}
+
+.shib-link a {
+  width: 100%;
+  display: block;
+  border-style: dashed;
+  border-width: 1px;
+  border-color: gray;
+}
+

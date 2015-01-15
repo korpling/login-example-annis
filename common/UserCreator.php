@@ -66,7 +66,9 @@ XML;
     $xml->addChild("group", $groupName);
   }
 
-  private function createUserXML($name, $password, $expirationHours = 72) {
+  private function createUserXML($name, $password,
+          $oldGroups = array(),
+          $expirationHours = 72) {
     $xml = new SimpleXMLElement(self::userTemplate);
     $xml->name = $name;
     $xml->passwordHash = self::createShiroHash($password);
@@ -76,10 +78,27 @@ XML;
     $xml->expires = date("c", $expirationTimestamp);
 
     self::addGroup($xml, "anonymous");
+    // add all groups that were given manually before
+    foreach($oldGroups as $g)
+    {
+      self::addGroup($xml, trim($g));
+    }
     // TODO: add more groups depending on the identity provider
     
     $data = $xml->asXML();
     return $data;
+  }
+  
+  private function getGroupsForUser($name) {    
+    $response = Httpful\Request::get(Config::annisServiceURL . '/admin/users/' . urlencode($name))
+            ->authenticateWith(Config::serviceUser, Config::servicePassword)
+            ->send();
+    if($response->code == 200 && isset($response->body->group))
+    {
+      return $response->body->group;
+    }
+    // return empty array per default
+    return array();
   }
 
   private function sendUserCreationData($data, $name) {    
@@ -93,8 +112,11 @@ XML;
   }
 
   public function createTemporaryUser($name) {
+    
+    $oldGroups = self::getGroupsForUser($name);
+    
     $password = self::generateRandomString(64);
-    $data = self::createUserXML($name, $password);
+    $data = self::createUserXML($name, $password,$oldGroups);
     $httpCode = self::sendUserCreationData($data, $name);
     if ($httpCode != 200) {
       trigger_error('Could not send user creation request, HTTP code is ' . $httpCode);

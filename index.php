@@ -28,7 +28,7 @@ include_once './common/Config.php';
     <div class="control">
       <h1>Login options</h1>
       <h2>Login with account from your home institution</h2>
-      <p>
+      <p class="shib-link">
         <a href="protected/createtempuser.php">Click here to login with Shibboleth</a>
       </p>
       <h2>Local Login</h2>
